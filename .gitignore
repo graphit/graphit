@@ -1,0 +1,16 @@
+*.beam
+.eunit
+deps/*
+apps/graphit/ebin
+*~
+dev/*
+doc/*
+rel/graphit
+
+*.o
+*.plt
+
+.idea/*
+
+
+
