@@ -1,6 +1,6 @@
 REBAR = rebar -v
 
-.PHONY: deps rel stagedevrel
+.PHONY: test deps rel stagedevrel
 
 all: deps compile
 
@@ -16,7 +16,7 @@ clean:
 distclean: clean devclean relclean
 	$(REBAR) delete-deps
 
-test:
+test: all
 	$(REBAR) skip_deps=true eunit
 
 rel: all
