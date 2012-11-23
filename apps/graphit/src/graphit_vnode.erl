@@ -24,11 +24,15 @@ start_vnode(I) ->
 
 %% vnode callbacks
 init([Partition]) ->
-  {ok, #state{ partition=Partition }}.
+  {ok, #state{ partition=Partition, data=[{"a", 1}, {"b", 2}] }}.
 
-handle_command(ping, _Sender, State) ->
+handle_command([ping], _Sender, State) ->
     ?PRINT({ping, "Ping"}),
     {reply, 12345, State};
+
+handle_command([get, Key], _Sender, State) ->
+    Value = proplists:get_value(Key, State#state.data),
+    {reply, Value, State};
 
 handle_command(Message, _Sender, State) ->
     ?PRINT({unhandled_command, Message}),
