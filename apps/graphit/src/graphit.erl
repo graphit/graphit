@@ -3,7 +3,7 @@
 -include("graphit.hrl").
 -include_lib("riak_core/include/riak_core_vnode.hrl").
 
--export([ping/0, get/1]).
+-export([ping/0, get/1, put/2]).
 
 %% Public API
 
@@ -13,6 +13,9 @@ ping() ->
 
 get(Key) ->
     command([get, Key]).
+
+put(Key, Value) ->
+    command([put, Key, Value]).
 
 command(C = [Cmd | _T]) ->
     CmdBin = list_to_binary(atom_to_list(Cmd)),

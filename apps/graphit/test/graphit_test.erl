@@ -34,5 +34,10 @@ all_test_() ->
                           end,
                           fun () ->
                               ?assertEqual(undefined, graphit:get("c"))
+                          end,
+                          fun () ->
+                              ?assertEqual(undefined, graphit:get("d")),
+                              ?assertEqual(ok, graphit:put("d", 4)),
+                              ?assertEqual(4, graphit:get("d"))
                           end
                       ]).
