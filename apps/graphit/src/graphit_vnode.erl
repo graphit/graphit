@@ -27,22 +27,15 @@ init([Partition]) ->
   {ok, #state{ partition=Partition, data=[{"a", 1}, {"b", 2}] }}.
 
 handle_command([ping], _Sender, State) ->
-    ?PRINT({ping, "Ping"}),
     {reply, 12345, State};
 
 handle_command([get, Key], _Sender, State) ->
-    ?PRINT("get"),
-    ?PRINT(State#state.data),
     Value = proplists:get_value(Key, State#state.data),
     {reply, Value, State};
 
 handle_command([put, Key, Value], _Sender, State) ->
-    ?PRINT("put"),
-    ?PRINT(State#state.data),
     Data = [{Key, Value} | State#state.data],
     NewState = State#state{data=Data},
-
-    ?PRINT(NewState),
     {reply, ok, NewState};
 
 handle_command(Message, _Sender, State) ->
