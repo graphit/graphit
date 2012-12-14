@@ -9,17 +9,24 @@
 
 %% @doc Pings a random vnode to make sure communication is functional
 ping() ->
-    command([ping]).
+    command(ping, [ping]).
 
 get(Key) ->
-    command([get, Key]).
+    command(kv, [get, Key]).
 
 put(Key, Value) ->
-    command([put, Key, Value]).
+    command(kv, [put, Key, Value]).
 
-command(C = [Cmd | _T]) ->
-    CmdBin = list_to_binary(atom_to_list(Cmd)),
-    DocIdx = riak_core_util:chash_key({CmdBin, term_to_binary(now())}),
+command(Bucket, Command) ->
+    DocIdx = chash_key(Bucket, Command),
     PrefList = riak_core_apl:get_primary_apl(DocIdx, 1, graphit),
     [{IndexNode, _Type}] = PrefList,
-    riak_core_vnode_master:sync_spawn_command(IndexNode, C, graphit_vnode_master).
+    riak_core_vnode_master:sync_spawn_command(IndexNode, Command, graphit_vnode_master).
+
+chash_key(Bucket, [get, Key]) ->
+    riak_core_util:chash_key({Bucket, term_to_binary(Key)});
+chash_key(Bucket, [put, Key, _Value]) ->
+    riak_core_util:chash_key({Bucket, term_to_binary(Key)});
+chash_key(Bucket, [_Command]) ->
+    riak_core_util:chash_key({Bucket, term_to_binary(now())}).
+
